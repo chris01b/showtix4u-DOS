@@ -1,28 +1,33 @@
-﻿var macro = "CODE:TAB T=1" + "\n";
-macro += "TAB CLOSEALLOTHERS" + "\n";
-macro += "URL GOTO=https://www.showtix4u.com/boxoffice.php?submit=Search+for+Events&begin=1542968&current_client=0451441210091192&ts=1445188550" + "\n";
-macro += "WAIT SECONDS=1" + "\n";
-macro += "TAG POS=6 TYPE=INPUT:BUTTON ATTR=ID:select_seats_button" + "\n";
-macro += "WAIT SECONDS=3";
+var handler = require('./handler.js');
 
-var seats = "CODE:SET !TIMEOUT_STEP 0" + "\n";
-seats += "TAG POS=1 TYPE=INPUT:CHECKBOX ATTR=ID:57089:{{side}}:{{row}}:{{seat}} CONTENT=YES";
+var gotoShow = "CODE:TAB T=1" + "\n";
+gotoShow += "TAB CLOSEALLOTHERS" + "\n";
+gotoShow += "URL GOTO=https://www.showtix4u.com/boxoffice.php?submit=Search+for+Events&begin=1542968&current_client=104127110621723&ts=1476759001" + "\n";
+gotoShow += "WAIT SECONDS=1" + "\n";
+gotoShow += "TAG POS=4 TYPE=INPUT:BUTTON ATTR=ID:select_seats_button" + "\n";
+gotoShow += "WAIT SECONDS=5" + "\n";
+gotoShow += "SET !EXTRACT_TEST_POPUP NO" + "\n";
+gotoShow += "TAG POS=1 TYPE=HTML ATTR=CLASS:* EXTRACT=HTM";
+
+var clickSeats = "CODE:SET !TIMEOUT_STEP 0" + "\n";
+clickSeats += "TAG POS=1 TYPE=INPUT:CHECKBOX ATTR=ID:54753:{{side}}:{{row}}:{{seat}} CONTENT=YES";
 
 var side
 function clickSection(seat, row, side) {
-   for(var row=65;row<=76;row++) {
-      for(var seat=0;seat<=30;seat++) {
-         iimDisplay(seat);    
-         iimSet("seat", seat);
-         iimSet("row", String.fromCharCode(row));
+   for (var r=row[0];r<=row[1];r++) {
+      for(var s=seat[0];s<=seat[1];s++) {
+         iimDisplay(s);    
+         iimSet("seat", s);
+         iimSet("row", String.fromCharCode(r));
          iimSet("side", side);
-         iimPlay(seats);
+         iimPlay(clickSeats);
       }
    }
 }
 
-iimPlay(macro);
+iimPlay(gotoShow);
+/*clickSection([2, 20], [65, 85], 'Left');
+clickSection([101, 113], [65, 86], 'Center');
+clickSection([1, 19], [65, 85], 'Right');*/
 
-clickSection([0, 30], [65, 76], "HL");
-clickSection([65, 76], [0, 30], "HR");
-clickSection([77, 83], [101, 135], "BACK");
+clickSection([2, 20], [65, 85], handler.sides[0]);
